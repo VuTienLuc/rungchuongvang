@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Thi - Lớp Toán Thầy Lực NHC</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .animate-fadeIn { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased selection:bg-blue-200">
+
+  <!-- Audio Background -->
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/05/16/audio_b8c91036f3.mp3?filename=lofi-study-112191.mp3" loop></audio>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl flex flex-col items-center shadow-2xl">
+      <i data-lucide="refresh-cw" class="w-10 h-10 text-[#2d70ae] animate-spin mb-4"></i>
+      <p id="loadingText" class="text-lg font-black text-gray-800">Đang xử lý dữ liệu...</p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VIEW 1: ĐĂNG NHẬP -->
+  <!-- ========================================== -->
+  <div id="login-view" class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#2d70ae] via-[#2d9da6] to-[#efa929] p-4 relative overflow-hidden">
+    <!-- Nền trang trí Vector -->
+    <div class="absolute top-10 left-10 text-white/20 -rotate-12"><i data-lucide="sigma" class="w-24 h-24"></i></div>
+    <div class="absolute bottom-20 left-16 text-white/20 rotate-12"><i data-lucide="pi" class="w-20 h-20"></i></div>
+    <div class="absolute top-24 right-12 text-white/20 rotate-45"><i data-lucide="function-square" class="w-24 h-24"></i></div>
+    <div class="absolute bottom-12 right-20 text-white/20 -rotate-12"><i data-lucide="calculator" class="w-32 h-32"></i></div>
+
+    <div class="bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-md transform transition-all z-10 relative">
+      <div class="text-center mb-8 relative">
+        <div class="bg-blue-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border border-blue-100 relative">
+          <div class="absolute -top-1 -left-4 text-[#2d70ae]/30 -rotate-12"><i data-lucide="function-square" class="w-7 h-7"></i></div>
+          <div class="absolute -bottom-1 -right-4 text-[#efa929]/30 rotate-12"><i data-lucide="pi" class="w-7 h-7"></i></div>
+          <i data-lucide="calculator" class="w-12 h-12 text-[#2d70ae]"></i>
+        </div>
+        <h1 class="text-3xl font-black text-gray-800 tracking-tight uppercase">Hệ Thống Thi</h1>
+        <p class="text-[#2d70ae] font-extrabold text-xl mt-1 tracking-wide uppercase">Lớp Toán Thầy Lực NHC</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex bg-gray-100 rounded-xl p-1 mb-6">
+        <button id="tabStudentBtn" class="flex-1 py-2 rounded-lg text-sm font-semibold transition-all bg-white text-[#2d70ae] shadow-sm">Học Sinh</button>
+        <button id="tabTeacherBtn" class="flex-1 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 hover:text-gray-700">Giáo Viên</button>
+      </div>
+
+      <!-- Tab Học Sinh -->
+      <div id="studentForm" class="space-y-4 animate-fadeIn">
+        <div id="loginErrorMsg" class="hidden bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-200"></div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên của bạn</label>
+          <input type="text" id="studentNameInput" placeholder="VD: Nguyễn Văn A..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] focus:border-[#2d70ae] outline-none transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mã bài thi</label>
+          <div class="relative">
+            <i data-lucide="key" class="absolute left-3 top-3.5 w-5 h-5 text-gray-400"></i>
+            <input type="text" id="examCodeInput" placeholder="Nhập mã (để trống thi Demo)" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] focus:border-[#2d70ae] outline-none transition-all uppercase" />
+          </div>
+        </div>
+        <button id="startExamBtn" class="w-full flex items-center justify-center space-x-2 bg-[#2d70ae] hover:bg-[#1d4b76] text-white py-3 rounded-xl font-bold shadow-lg transform transition hover:-translate-y-0.5">
+          <i data-lucide="play" class="w-5 h-5"></i>
+          <span>Bắt đầu làm bài</span>
+        </button>
+      </div>
+
+      <!-- Tab Giáo viên -->
+      <div id="teacherForm" class="space-y-4 animate-fadeIn hidden">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mã bảo mật quản trị</label>
+          <div class="relative">
+            <i data-lucide="shield" class="absolute left-3 top-3.5 w-5 h-5 text-gray-400"></i>
+            <input type="password" id="teacherCodeInput" placeholder="Nhập mã bảo mật..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#d5546d] focus:border-[#d5546d] outline-none transition-all" />
+          </div>
+        </div>
+        <button id="teacherLoginBtn" class="w-full flex items-center justify-center space-x-2 bg-[#d5546d] hover:bg-[#913647] text-white py-3 rounded-xl font-bold shadow-lg transform transition hover:-translate-y-0.5">
+          <i data-lucide="log-in" class="w-5 h-5"></i>
+          <span>Đăng nhập Quản trị</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VIEW 2: LÀM BÀI THI -->
+  <!-- ========================================== -->
+  <div id="quiz-view" class="min-h-screen bg-gray-100 flex-col font-sans hidden">
+    <!-- Header -->
+    <div class="bg-white shadow-sm px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-10">
+      <div class="flex items-center space-x-4">
+        <div class="font-semibold text-gray-700 text-sm md:text-base flex items-center">
+          <span id="headerStudentName"></span> 
+          <span id="headerExamCode" class="text-gray-400 font-normal hidden md:inline ml-2"></span>
+          <!-- Huy hiệu báo hiệu Đề Tổ Hợp -->
+          <span id="badgeCombo" class="hidden bg-purple-100 text-purple-700 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded-full ml-2 uppercase tracking-wider">Tổ Hợp Ngẫu Nhiên</span>
+        </div>
+        <button id="toggleMusicBtn" class="text-gray-400 hover:text-gray-600 transition">
+          <i data-lucide="volume-2" id="musicIcon" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="timerContainer" class="flex items-center space-x-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold border-2 border-gray-800 text-gray-800 transition-colors">
+        <i data-lucide="clock" class="w-4 h-4 md:w-5 md:h-5"></i>
+        <span id="timerText">20:00</span>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="w-full bg-gray-200 h-1.5">
+      <div id="progressBar" class="bg-[#efa929] h-1.5 transition-all duration-300" style="width: 0%"></div>
+    </div>
+
+    <div class="flex-1 w-full mx-auto p-4 md:p-6 flex flex-col max-w-5xl">
+      <!-- Question -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 flex flex-col mb-4 md:mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <span id="questionCounter" class="text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-1 rounded">Câu 1 / 10</span>
+        </div>
+        <h2 id="questionText" class="text-xl md:text-3xl font-bold text-gray-800 mb-6 leading-snug"></h2>
+        <div id="questionImageContainer" class="mb-6 flex justify-center hidden">
+          <img id="questionImage" src="" alt="Minh họa" class="max-h-64 object-contain rounded-xl shadow-sm border border-gray-100">
+        </div>
+      </div>
+
+      <!-- Options (Grid) -->
+      <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 flex-1"></div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between items-center mt-6 md:mt-8 pt-4">
+        <button id="prevBtn" class="flex items-center space-x-1 px-5 py-3 rounded-xl font-bold transition text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm disabled:text-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+          <span class="hidden md:inline">Câu trước</span>
+        </button>
+        <button id="nextBtn" class="flex items-center space-x-1 bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 px-6 py-3 rounded-xl font-bold shadow-sm transition">
+          <span class="hidden md:inline">Câu tiếp</span>
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+        <button id="submitBtn" class="hidden items-center space-x-2 bg-[#d5546d] hover:bg-[#913647] text-white px-8 py-3 rounded-xl font-bold shadow-[0_4px_0_0_#913647] transform transition active:translate-y-1 active:shadow-none">
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+          <span>Nộp bài ngay</span>
+        </button>
+      </div>
+
+      <!-- Quick Nav Grid -->
+      <div class="mt-6 md:mt-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
+        <div id="quickNavContainer" class="flex flex-wrap gap-2 justify-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VIEW 3: KẾT QUẢ -->
+  <!-- ========================================== -->
+  <div id="result-view" class="min-h-screen bg-gray-100 flex items-center justify-center p-4 hidden">
+    <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-gray-200 max-w-lg w-full text-center relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-32 bg-[#2d70ae] rounded-b-[50%] transform -translate-y-16"></div>
+      
+      <div class="relative z-10 pt-8">
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Hoàn thành bài thi!</h2>
+        <p class="text-gray-500 font-medium mb-8">Thí sinh: <span id="resStudentName" class="text-[#2d70ae] font-bold"></span></p>
+
+        <div class="flex justify-center mb-8">
+          <div class="relative w-40 h-40">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+              <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+              <path id="resCircle" class="text-[#efa929] transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span id="resScore" class="text-4xl font-black text-[#efa929]">0</span>
+              <span class="text-gray-400 text-sm font-bold">/ <span id="resTotal">0</span> câu</span>
+            </div>
+          </div>
+        </div>
+
+        <p id="resMessage" class="text-xl font-bold mb-8 text-[#efa929]"></p>
+
+        <!-- Khối hiển thị Rank (Chỉ hiện khi có rank) -->
+        <div id="rankContainer" class="hidden bg-gradient-to-r border-2 rounded-2xl p-6 flex-col items-center justify-center mb-8 shadow-md relative overflow-hidden">
+          <div id="rankGlow" class="absolute inset-0 opacity-20 pointer-events-none"></div>
+          <div class="flex items-center space-x-4 z-10">
+            <div id="rankIconContainer" class="p-3 rounded-full shadow-sm">
+              <i data-lucide="trophy" class="w-8 h-8"></i>
+            </div>
+            <div class="text-left">
+              <p id="rankLabel" class="font-bold text-sm uppercase tracking-wider">Xếp hạng hiện tại</p>
+              <p id="rankValueContainer" class="text-3xl font-black leading-none mt-1">
+                #<span id="rankNum"></span> <span id="rankTotal" class="text-lg font-medium opacity-80"></span>
+              </p>
+            </div>
+          </div>
+          <div id="rankTitleContainer" class="hidden mt-4 pt-4 border-t border-black/5 w-full text-center z-10">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] block mb-2">Danh Hiệu Đạt Được</span>
+            <div class="relative inline-block">
+               <span id="rankTitleText" class="text-2xl md:text-3xl font-black uppercase tracking-wider drop-shadow-lg"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="bg-green-50 rounded-2xl p-4 border border-green-200">
+            <div class="flex items-center justify-center space-x-2 text-green-600 mb-1">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+              <span class="font-bold text-sm uppercase">Câu đúng</span>
+            </div>
+            <div id="resCorrect" class="text-2xl font-black text-green-700">0</div>
+          </div>
+          <div class="bg-red-50 rounded-2xl p-4 border border-red-200">
+            <div class="flex items-center justify-center space-x-2 text-red-500 mb-1">
+              <i data-lucide="x-circle" class="w-5 h-5"></i>
+              <span class="font-bold text-sm uppercase">Câu sai</span>
+            </div>
+            <div id="resWrong" class="text-2xl font-black text-red-600">0</div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-center space-x-3 mb-8 border border-gray-200">
+          <i data-lucide="clock" class="w-6 h-6 text-gray-400"></i>
+          <span class="text-gray-600 font-medium text-lg">Thời gian: <span id="resTime" class="text-gray-900 font-black">00:00</span></span>
+        </div>
+
+        <button onclick="goHome()" class="w-full bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-xl font-bold shadow-lg transition">
+          Quay lại trang chủ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VIEW 4: QUẢN TRỊ GIÁO VIÊN -->
+  <!-- ========================================== -->
+  <div id="teacher-view" class="min-h-screen bg-gray-50 p-4 md:p-8 hidden">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        <div class="flex items-center space-x-4 mb-4 md:mb-0">
+          <div class="bg-red-50 p-3 rounded-xl border border-red-100">
+            <i data-lucide="users" class="w-8 h-8 text-[#d5546d]"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-black text-gray-800">Bảng Quản Trị Giáo Viên</h1>
+            <p class="text-gray-500 text-sm font-medium">Tạo mã đề và theo dõi kết quả</p>
+          </div>
+        </div>
+        <button onclick="goHome()" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-bold transition">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Đăng xuất</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Panel 1: Tạo Prompt -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
+            <h2 class="text-lg font-black text-[#2d70ae] flex items-center mb-4">
+              <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i> Trợ Lý AI: Tạo Mẫu Câu Lệnh (Prompt)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Vai trò người tạo đề</label>
+                <input type="text" id="pRole" value="Giáo viên toán xuất sắc có 20 năm kinh nghiệm" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Chủ đề đề thi</label>
+                <input type="text" id="pTopic" placeholder="VD: Hình học không gian..." class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Khối Lớp</label>
+                <input type="text" id="pGrade" placeholder="VD: Lớp 12" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">Số câu</label>
+                  <input type="number" id="pCount" value="10" min="1" max="100" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">Mức độ</label>
+                  <select id="pDiff" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm">
+                    <option>Dễ</option><option selected>Trung bình</option><option>Khó</option><option>Tổng hợp</option>
+                  </select>
+                </div>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Ghi chú bổ sung (Tùy chọn)</label>
+                <input type="text" id="pNotes" placeholder="VD: Thêm 2 câu hỏi thực tế..." class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2d70ae] text-sm" />
+              </div>
+            </div>
+            
+            <button id="btnGeneratePrompt" class="w-full bg-[#2d70ae]/10 hover:bg-[#2d70ae]/20 text-[#2d70ae] font-bold py-2.5 rounded-xl transition flex items-center justify-center text-sm mb-4 border border-[#2d70ae]/30">
+              Sinh Câu Lệnh (Prompt)
+            </button>
+
+            <div id="promptOutputContainer" class="relative mt-auto hidden">
+              <textarea id="promptOutput" readonly class="w-full h-32 p-3 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none"></textarea>
+              <button id="btnCopyPrompt" class="absolute bottom-3 right-3 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 p-2 rounded-lg flex items-center text-xs font-bold transition">
+                <i data-lucide="copy" id="promptCopyIcon" class="w-4 h-4 text-gray-600 mr-1"></i>
+                <span id="promptCopyText" class="text-gray-600">Copy gửi AI</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Tạo Mã Đề -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full">
+            <h2 class="text-lg font-black text-gray-800 flex items-center mb-4">
+              <i data-lucide="file-spreadsheet" class="w-5 h-5 mr-2 text-green-600"></i> Tạo Mã Từ Sheets
+            </h2>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">1. Link Google Sheets (Ngân hàng đề)</label>
+                <div class="relative">
+                  <i data-lucide="link" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                  <input type="text" id="tSheetLink" placeholder="Dán link câu hỏi..." class="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none text-sm" />
+                </div>
+                <p class="text-[10px] text-gray-500 mt-2 font-medium leading-tight">Kết quả thi sẽ được <span class="text-green-600 font-bold">TỰ ĐỘNG LƯU</span> về Sheets trung tâm.</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">2. Chế độ Đề Tổ Hợp (Tùy chọn)</label>
+                <div class="relative">
+                  <i data-lucide="dices" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                  <input type="number" id="tRandomCount" placeholder="Nhập số lượng câu hỏi cho mỗi đề..." min="1" class="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none text-sm" />
+                </div>
+                <p class="text-[10px] text-gray-500 mt-1 font-medium leading-tight">Hệ thống sẽ lấy ngân hàng câu hỏi từ Sheet và <span class="text-purple-600 font-bold">tạo ra các đề trộn ngẫu nhiên, không ai giống ai</span> nhưng có cùng số lượng câu. (Để trống nếu lấy toàn bộ).</p>
+              </div>
+
+              <button id="btnGenerateCode" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-3 rounded-xl transition flex items-center justify-center mt-2 shadow-[0_4px_0_0_#166534] active:translate-y-1 active:shadow-none">
+                Tạo Mã Bài Thi
+              </button>
+            </div>
+
+            <!-- Kết quả tạo mã -->
+            <div id="codeResultContainer" class="hidden mt-6 bg-white border-2 border-[#efa929] rounded-xl p-4 text-center animate-fadeIn shadow-lg relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-full h-1 bg-[#efa929]"></div>
+              <p class="text-sm font-black text-gray-700 mb-2">QUÉT MÃ QR VÀO THI</p>
+              <div class="flex justify-center mb-3">
+                <div class="p-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                  <img id="qrCodeImg" src="" alt="QR" class="w-32 h-32" />
+                </div>
+              </div>
+              <p class="text-xs font-bold text-gray-500 mb-1">Hoặc nhập mã tay:</p>
+              <p id="generatedCodeText" class="text-3xl font-black text-[#efa929] tracking-widest drop-shadow-sm"></p>
+              <button id="btnCopyJoinLink" class="mt-4 w-full flex items-center justify-center py-2.5 rounded-lg text-sm font-bold transition border bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 shadow-sm">
+                <i data-lucide="share-2" id="linkCopyIcon" class="w-4 h-4 mr-1.5"></i>
+                <span id="linkCopyText">Copy Link Nhanh</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng Xếp Hạng -->
+        <div class="lg:col-span-3 mt-4">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 border-b border-gray-200">
+                    <th class="p-4 font-bold text-gray-600 text-sm uppercase">Hạng</th>
+                    <th class="p-4 font-bold text-gray-600 text-sm uppercase">Học sinh</th>
+                    <th class="p-4 font-bold text-gray-600 text-sm uppercase text-center">Mã đề</th>
+                    <th class="p-4 font-bold text-gray-600 text-sm uppercase text-center">Điểm</th>
+                    <th class="p-4 font-bold text-gray-600 text-sm uppercase text-center">Thời gian</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardBody" class="divide-y divide-gray-100">
+                  <!-- JS sẽ điền vào đây -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phân Tích Câu Sai -->
+        <div id="errorStatsContainer" class="lg:col-span-3 mt-4 hidden">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5"><i data-lucide="alert-triangle" class="w-32 h-32"></i></div>
+            <h2 class="text-xl font-black text-red-600 flex items-center mb-6 relative z-10">
+              <i data-lucide="bar-chart" class="w-6 h-6 mr-2"></i> Phân Tích Chất Lượng: Câu Cần Ôn Tập
+            </h2>
+            <div id="errorStatsContent" class="space-y-6 relative z-10">
+              <!-- JS điền -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT CHÍNH -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // 1. CẤU HÌNH & HẰNG SỐ
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'exam-app-demo';
+
+    const EXAM_TIME_MINUTES = 20;
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyL6nUdwfd41JgNmz7_buJ2Nq8Et43eqb0sNBPwcVzvh7g_QBsaQnNzUYtxnPEnQDlyNw/exec";
+    
+    const defaultQuizData = [
+      {
+        question: "1. Nghiệm của phương trình bậc hai $ax^2 + bx + c = 0$ (với $\\Delta > 0$) được tính theo công thức nào dưới đây?",
+        image: "https://images.unsplash.com/photo-1632516643720-e7f0d7e6a426?q=80&w=500&auto=format&fit=crop",
+        options: ["$x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$", "$x = \\frac{b \\pm \\sqrt{\\Delta}}{2a}$", "$x = \\frac{-b \\pm \\Delta}{2a}$", "$x = \\frac{-b \\pm \\sqrt{\\Delta}}{a}$"],
+        correctIndex: 0
+      },
+      {
+        question: "2. Tính đạo hàm của hàm số $f(x) = x^3 - 3x^2 + 2x - 5$.",
+        image: null,
+        options: ["$f'(x) = 3x^2 - 6x + 2$", "$f'(x) = 3x^2 - 3x + 2$", "$f'(x) = x^2 - 6x + 2$", "$f'(x) = 3x^2 - 6x - 5$"],
+        correctIndex: 0
+      }
+    ];
+
+    const quizizzColors = [
+      { bg: "bg-[#2d70ae]", shadow: "shadow-[0_6px_0_0_#1d4b76]", ring: "text-[#2d70ae]" },
+      { bg: "bg-[#2d9da6]", shadow: "shadow-[0_6px_0_0_#1d676d]", ring: "text-[#2d9da6]" },
+      { bg: "bg-[#efa929]", shadow: "shadow-[0_6px_0_0_#a97517]", ring: "text-[#efa929]" },
+      { bg: "bg-[#d5546d]", shadow: "shadow-[0_6px_0_0_#913647]", ring: "text-[#d5546d]" }
+    ];
+
+    const RANK_1_TITLES = ["Chiến Thần Tri Thức", "Kẻ Hủy Diệt Đề Thi", "Chúa Tể Điểm Số", "Bộ Não Vô Cực"];
+    const RANK_2_TITLES = ["Kẻ Thách Thức Ngai Vàng", "Học Giả Thâm Thúy", "Thiên Tài Về Nhì", "Á Thần Tri Thức"];
+    const RANK_3_TITLES = ["Bóng Ma Bảng Xếp Hạng", "Cao Thủ Chốt Sổ", "Anh Hùng Núp Bóng", "Thần Đồng Phút Chót"];
+
+    // 2. BIẾN TRẠNG THÁI (STATE)
+    let currentUser = null;
+    let currentView = 'login'; // login, quiz, result, teacher
+    let activeQuizData = [...defaultQuizData];
+    let activeConfig = null;
+    
+    // Quiz State
+    let studentNameStr = '';
+    let examCodeStr = '';
+    let currentQuestionIdx = 0;
+    let answersArr = [];
+    let timeLeftSec = EXAM_TIME_MINUTES * 60;
+    let timerInterval = null;
+    let isMusicPlaying = true;
+    
+    // Teacher State
+    let leaderboardData = [];
+    let unsubscribeLeaderboard = null;
+
+    // 3. TIỆN ÍCH
+    const $ = (id) => document.getElementById(id);
+    const show = (el) => el && el.classList.remove('hidden');
+    const hide = (el) => el && el.classList.add('hidden');
+    
+    function formatMathText(text) {
+      if (!text) return '';
+      return String(text).split('$').map((part, index) => {
+        if (index % 2 === 1) return `<span class="bg-black/20 text-inherit px-1.5 py-0.5 rounded font-bold mx-1 inline-block tracking-wide">\\(${part}\\)</span>`;
+        return part;
+      }).join('');
+    }
+
+    function triggerMathJax(elements) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise(elements).catch(e => console.error(e));
+      }
+    }
+
+    function showLoading(msg = "Đang xử lý...") {
+      $('loadingText').textContent = msg;
+      $('loadingOverlay').style.display = 'flex';
+    }
+    function hideLoading() {
+      $('loadingOverlay').style.display = 'none';
+    }
+
+    function switchView(viewName) {
+      currentView = viewName;
+      hide($('login-view')); hide($('quiz-view')); hide($('result-view')); hide($('teacher-view'));
+      show($(viewName + '-view'));
+      if(viewName === 'teacher') fetchLeaderboard();
+    }
+
+    window.goHome = () => {
+      if(timerInterval) clearInterval(timerInterval);
+      $('studentNameInput').value = '';
+      switchView('login');
+    };
+
+    // Thuật toán xáo trộn mảng Fisher-Yates
+    function shuffleArray(array) {
+      let curId = array.length;
+      while (0 !== curId) {
+        let randId = Math.floor(Math.random() * curId);
+        curId -= 1;
+        let tmp = array[curId];
+        array[curId] = array[randId];
+        array[randId] = tmp;
+      }
+      return array;
+    }
+
+    // 4. FIREBASE AUTH
+    async function initAuth() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (error) { console.error("Lỗi xác thực:", error); }
+    }
+    initAuth();
+    onAuthStateChanged(auth, user => { currentUser = user; });
+
+    // 5. EVENT LISTENERS - LOGIN
+    $('tabStudentBtn').onclick = () => {
+      $('tabStudentBtn').className = "flex-1 py-2 rounded-lg text-sm font-semibold transition-all bg-white text-[#2d70ae] shadow-sm";
+      $('tabTeacherBtn').className = "flex-1 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 hover:text-gray-700";
+      show($('studentForm')); hide($('teacherForm'));
+    };
+    $('tabTeacherBtn').onclick = () => {
+      $('tabTeacherBtn').className = "flex-1 py-2 rounded-lg text-sm font-semibold transition-all bg-white text-[#d5546d] shadow-sm";
+      $('tabStudentBtn').className = "flex-1 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 hover:text-gray-700";
+      show($('teacherForm')); hide($('studentForm'));
+    };
+
+    $('teacherLoginBtn').onclick = () => {
+      const code = $('teacherCodeInput').value;
+      if (code === 'thayluc') {
+        $('teacherCodeInput').value = '';
+        switchView('teacher');
+      } else {
+        alert("Mã bảo mật không đúng!");
+      }
+    };
+
+    // Xử lý tham số URL
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('code')) {
+      $('examCodeInput').value = params.get('code').toUpperCase();
+    }
+
+    // Bắt đầu thi
+    $('startExamBtn').onclick = async () => {
+      studentNameStr = $('studentNameInput').value.trim();
+      examCodeStr = $('examCodeInput').value.trim().toUpperCase();
+      
+      if(!studentNameStr) return alert("Vui lòng nhập họ và tên!");
+      
+      showLoading("Đang tải đề thi...");
+      hide($('loginErrorMsg'));
+      activeQuizData = [...defaultQuizData];
+      activeConfig = null;
+
+      if (examCodeStr) {
+        try {
+          const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'exam_configs', examCodeStr));
+          if (docSnap.exists()) {
+            activeConfig = docSnap.data();
+            const res = await fetch(`https://docs.google.com/spreadsheets/d/${activeConfig.sheetId}/gviz/tq?tqx=out:json`);
+            const text = await res.text();
+            const jsonStr = text.substring(47).slice(0, -2);
+            const data = JSON.parse(jsonStr);
+            
+            const rows = data.table.rows;
+            let parsed = rows.map(r => {
+              if(!r.c || !r.c[0] || !r.c[0].v) return null;
+              return {
+                question: String(r.c[0].v),
+                options: [r.c[1]?.v||'', r.c[2]?.v||'', r.c[3]?.v||'', r.c[4]?.v||''].map(String),
+                correctIndex: parseInt(r.c[5]?.v || 0),
+                image: (r.c[6] && r.c[6].v) ? String(r.c[6].v) : null
+              }
+            }).filter(Boolean);
+            if(parsed.length && parsed[0].question.toLowerCase().includes('câu hỏi')) parsed.shift();
+            
+            if(parsed.length) {
+              // 1. LUÔN XÁO TRỘN TOÀN BỘ NGÂN HÀNG CÂU HỎI CHO MỖI HỌC SINH
+              let shuffledQuestions = shuffleArray([...parsed]);
+              
+              // Rút số lượng theo cấu hình (nếu có), nếu không lấy toàn bộ
+              if (activeConfig.randomCount && activeConfig.randomCount > 0 && activeConfig.randomCount < shuffledQuestions.length) {
+                activeQuizData = shuffledQuestions.slice(0, activeConfig.randomCount);
+              } else {
+                activeQuizData = shuffledQuestions;
+              }
+
+              // 2. XÁO TRỘN TIẾP CÁC PHƯƠNG ÁN BÊN TRONG TỪNG CÂU HỎI
+              activeQuizData.forEach(q => {
+                 // Tạo mảng index [0, 1, 2, 3] và xáo trộn nó
+                 let indices = Array.from({length: q.options.length}, (_, i) => i);
+                 shuffleArray(indices);
+                 
+                 let newOptions = [];
+                 let newCorrectIndex = q.correctIndex;
+                 
+                 // Ánh xạ phương án cũ sang mảng mới đã xáo trộn
+                 indices.forEach((oldIdx, newIdx) => {
+                     newOptions.push(q.options[oldIdx]);
+                     // Cập nhật lại vị trí đáp án đúng
+                     if (oldIdx === q.correctIndex) {
+                       newCorrectIndex = newIdx;
+                     }
+                 });
+                 
+                 q.options = newOptions;
+                 q.correctIndex = newCorrectIndex;
+              });
+
+            }
+            else { throw new Error('Sheet trống hoặc sai định dạng'); }
+          } else {
+            throw new Error('Mã bài thi không tồn tại!');
+          }
+        } catch (err) {
+          hideLoading();
+          $('loginErrorMsg').textContent = err.message || "Lỗi tải đề. Kiểm tra lại quyền Sheet.";
+          show($('loginErrorMsg'));
+          return;
+        }
+      } else {
+        // Áp dụng xáo trộn phương án cho cả đề Demo nếu học sinh không nhập mã
+        let shuffledDemo = shuffleArray([...defaultQuizData]);
+        shuffledDemo.forEach(q => {
+           let indices = Array.from({length: q.options.length}, (_, i) => i);
+           shuffleArray(indices);
+           let newOptions = [];
+           let newCorrectIndex = q.correctIndex;
+           indices.forEach((oldIdx, newIdx) => {
+               newOptions.push(q.options[oldIdx]);
+               if (oldIdx === q.correctIndex) newCorrectIndex = newIdx;
+           });
+           q.options = newOptions;
+           q.correctIndex = newCorrectIndex;
+        });
+        activeQuizData = shuffledDemo;
+      }
+
+      answersArr = new Array(activeQuizData.length).fill(null);
+      currentQuestionIdx = 0;
+      timeLeftSec = EXAM_TIME_MINUTES * 60;
+      
+      $('headerStudentName').textContent = studentNameStr;
+      $('headerExamCode').textContent = examCodeStr ? `| Mã: ${examCodeStr}` : '';
+      
+      // Hiển thị huy hiệu nếu đang bật chế độ rút câu hỏi (Tổ hợp)
+      if (activeConfig && activeConfig.randomCount) {
+        show($('badgeCombo'));
+      } else {
+        hide($('badgeCombo'));
+      }
+      
+      hideLoading();
+      switchView('quiz');
+      startTimer();
+      renderQuestion();
+      
+      if(isMusicPlaying) $('bgMusic').play().catch(()=>{});
+    };
+
+    // 6. QUIZ LOGIC
+    function startTimer() {
+      if(timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeftSec--;
+        renderTimer();
+        if(timeLeftSec <= 0) {
+          clearInterval(timerInterval);
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function renderTimer() {
+      const m = Math.floor(timeLeftSec / 60).toString().padStart(2, '0');
+      const s = (timeLeftSec % 60).toString().padStart(2, '0');
+      $('timerText').textContent = `${m}:${s}`;
+      const tc = $('timerContainer');
+      if (timeLeftSec < 300) {
+        tc.className = "flex items-center space-x-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold border-2 border-red-500 text-red-500 bg-red-50 animate-pulse";
+      } else {
+        tc.className = "flex items-center space-x-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold border-2 border-gray-800 text-gray-800";
+      }
+    }
+
+    $('toggleMusicBtn').onclick = () => {
+      isMusicPlaying = !isMusicPlaying;
+      if(isMusicPlaying) $('bgMusic').play();
+      else $('bgMusic').pause();
+      $('musicIcon').setAttribute('data-lucide', isMusicPlaying ? 'volume-2' : 'volume-x');
+      lucide.createIcons();
+    };
+
+    window.selectAnswer = (idx) => {
+      answersArr[currentQuestionIdx] = idx;
+      renderQuestion(); // Re-render to show selection
+    };
+
+    $('prevBtn').onclick = () => { if(currentQuestionIdx > 0) { currentQuestionIdx--; renderQuestion(); } };
+    $('nextBtn').onclick = () => { if(currentQuestionIdx < activeQuizData.length-1) { currentQuestionIdx++; renderQuestion(); } };
+    $('submitBtn').onclick = () => submitExam();
+
+    window.jumpToQuestion = (idx) => {
+      currentQuestionIdx = idx;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = activeQuizData[currentQuestionIdx];
+      const answeredCount = answersArr.filter(a => a !== null).length;
+      $('progressBar').style.width = `${(answeredCount / activeQuizData.length) * 100}%`;
+      $('questionCounter').textContent = `Câu ${currentQuestionIdx + 1} / ${activeQuizData.length}`;
+      
+      $('questionText').innerHTML = formatMathText(q.question);
+      if (q.image) {
+        $('questionImage').src = q.image;
+        show($('questionImageContainer'));
+      } else {
+        hide($('questionImageContainer'));
+      }
+
+      let optionsHTML = '';
+      q.options.forEach((opt, idx) => {
+        const isSelected = answersArr[currentQuestionIdx] === idx;
+        const colorObj = quizizzColors[idx % quizizzColors.length];
+        
+        const baseClass = `relative w-full text-left p-5 md:p-8 rounded-2xl transition-all duration-150 flex items-center min-h-[100px] md:min-h-[120px] text-white font-bold text-lg md:text-xl ${colorObj.bg}`;
+        const selClass = isSelected ? 'translate-y-[6px] shadow-none ring-4 ring-white ring-inset opacity-100' : `${colorObj.shadow} hover:-translate-y-1 hover:brightness-110 opacity-95`;
+        const circleClass = isSelected ? 'border-white bg-white' : 'border-white/50 bg-transparent';
+        const checkHTML = isSelected ? `<i data-lucide="check" class="w-4 h-4 md:w-5 md:h-5 ${colorObj.ring}" stroke-width="4"></i>` : '';
+
+        optionsHTML += `
+          <button onclick="selectAnswer(${idx})" class="${baseClass} ${selClass}">
+            <div class="w-6 h-6 md:w-8 md:h-8 shrink-0 rounded-full border-4 flex items-center justify-center mr-4 transition-all ${circleClass}">
+              ${checkHTML}
+            </div>
+            <span class="flex-1 drop-shadow-md leading-tight">${formatMathText(opt)}</span>
+          </button>
+        `;
+      });
+      $('optionsContainer').innerHTML = optionsHTML;
+
+      // Nav buttons
+      $('prevBtn').disabled = currentQuestionIdx === 0;
+      if (currentQuestionIdx === activeQuizData.length - 1) {
+        hide($('nextBtn')); show($('submitBtn'));
+      } else {
+        show($('nextBtn')); hide($('submitBtn'));
+      }
+
+      // Quick nav
+      let quickNavHTML = '';
+      activeQuizData.forEach((_, idx) => {
+        const isCur = currentQuestionIdx === idx;
+        const isAns = answersArr[idx] !== null;
+        const cl = isCur ? 'ring-2 ring-offset-2 ring-gray-800 bg-gray-100 text-gray-800' : 
+                   isAns ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200';
+        quickNavHTML += `<button onclick="jumpToQuestion(${idx})" class="w-10 h-10 rounded-lg text-sm font-bold flex items-center justify-center transition-colors ${cl}">${idx + 1}</button>`;
+      });
+      $('quickNavContainer').innerHTML = quickNavHTML;
+
+      lucide.createIcons();
+      triggerMathJax([$('questionText'), $('optionsContainer')]);
+    }
+
+    // 7. SUBMIT & RESULT
+    async function submitExam() {
+      clearInterval(timerInterval);
+      showLoading("Đang nộp bài...");
+      $('bgMusic').pause();
+
+      let correctCount = 0;
+      const detailedResults = activeQuizData.map((q, i) => {
+        const isC = answersArr[i] === q.correctIndex;
+        if(isC) correctCount++;
+        return { question: q.question, isCorrect: isC };
+      });
+
+      const timeSpent = (EXAM_TIME_MINUTES * 60) - timeLeftSec;
+      const usedCode = examCodeStr || 'DEMO';
+
+      const resultObj = {
+        studentName: studentNameStr,
+        examCode: usedCode,
+        score: correctCount,
+        total: activeQuizData.length,
+        timeSpent: timeSpent,
+        timestamp: new Date().toISOString(),
+        detailedResults
+      };
+
+      // Push to Apps Script
+      try {
+        const url = `${DEFAULT_SCRIPT_URL}?studentName=${encodeURIComponent(studentNameStr)}&examCode=${encodeURIComponent(usedCode)}&score=${correctCount}&total=${activeQuizData.length}&timeSpent=${timeSpent}`;
+        fetch(url, { mode: 'no-cors' }).catch(e=>console.log(e));
+      } catch (e) {}
+
+      // Push to Firebase and calculate rank
+      if (currentUser) {
+        try {
+          const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'exam_results');
+          const docRef = await addDoc(colRef, { ...resultObj, userId: currentUser.uid, createdAt: serverTimestamp() });
+          
+          const snap = await getDocs(colRef);
+          let allData = snap.docs.map(d => ({id: d.id, ...d.data()}));
+          if(!allData.find(d => d.id === docRef.id)) allData.push({id: docRef.id, ...resultObj});
+          
+          let filtered = allData.filter(r => (r.examCode || 'DEMO') === usedCode);
+          filtered.sort((a,b) => {
+            if(b.score !== a.score) return b.score - a.score;
+            return a.timeSpent - b.timeSpent;
+          });
+          
+          const rank = filtered.findIndex(r => r.id === docRef.id) + 1;
+          renderResultData(resultObj, rank, filtered.length);
+        } catch (e) {
+          console.error(e);
+          renderResultData(resultObj, 0, 0);
+        }
+      } else {
+        renderResultData(resultObj, 0, 0);
+      }
+    }
+
+    function renderResultData(res, rank, totalRank) {
+      const pct = Math.round((res.score / res.total) * 100);
+      $('resStudentName').textContent = res.studentName;
+      $('resScore').textContent = res.score;
+      $('resTotal').textContent = res.total;
+      $('resCircle').setAttribute('stroke-dasharray', `${pct}, 100`);
+      
+      let color = "text-[#efa929]", msg = "Cố gắng lên nhé!";
+      if(pct >= 80) { color = "text-green-500"; msg = "Xuất sắc! Kiến thức rất vững."; }
+      else if(pct >= 50) { color = "text-[#2d70ae]"; msg = "Khá tốt! Hãy ôn tập thêm."; }
+      
+      $('resMessage').className = `text-xl font-bold mb-8 ${color}`;
+      $('resMessage').textContent = msg;
+      
+      $('resCorrect').textContent = res.score;
+      $('resWrong').textContent = res.total - res.score;
+      const m = Math.floor(res.timeSpent / 60).toString().padStart(2, '0');
+      const s = (res.timeSpent % 60).toString().padStart(2, '0');
+      $('resTime').textContent = `${m}:${s}`;
+
+      if (rank > 0) {
+        $('rankNum').textContent = rank;
+        $('rankTotal').textContent = `/ ${totalRank}`;
+        
+        let rColorClass = "from-gray-50 to-gray-100 border-gray-200";
+        let rTextClass = "text-gray-700";
+        let rIconClass = "bg-gray-200 text-gray-500";
+        let rLabelClass = "text-gray-600";
+        
+        let title = ''; let tStyle = '';
+        if(rank === 1) {
+          rColorClass="from-yellow-50 to-amber-100 border-yellow-300"; rTextClass="text-yellow-600"; rIconClass="bg-yellow-100 text-yellow-500"; rLabelClass="text-yellow-700";
+          title = RANK_1_TITLES[Math.floor(Math.random() * RANK_1_TITLES.length)];
+          tStyle = "bg-gradient-to-r from-yellow-300 via-yellow-100 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(250,204,21,0.8)] animate-pulse";
+          $('rankGlow').className = "absolute inset-0 bg-yellow-400 opacity-20 animate-pulse pointer-events-none";
+        } else if (rank === 2) {
+          rColorClass="from-slate-50 to-gray-100 border-slate-300"; rTextClass="text-slate-600"; rIconClass="bg-slate-200 text-slate-500"; rLabelClass="text-slate-700";
+          title = RANK_2_TITLES[Math.floor(Math.random() * RANK_2_TITLES.length)];
+          tStyle = "bg-gradient-to-r from-slate-300 via-white to-slate-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(148,163,184,0.9)]";
+          $('rankGlow').className = "absolute inset-0 bg-slate-400 opacity-10 pointer-events-none";
+        } else if (rank === 3) {
+          rColorClass="from-orange-50 to-amber-100 border-orange-300"; rTextClass="text-orange-600"; rIconClass="bg-orange-100 text-orange-500"; rLabelClass="text-orange-700";
+          title = RANK_3_TITLES[Math.floor(Math.random() * RANK_3_TITLES.length)];
+          tStyle = "bg-gradient-to-r from-orange-400 via-orange-200 to-orange-600 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(249,115,22,0.8)]";
+          $('rankGlow').className = "absolute inset-0 bg-orange-400 opacity-15 pointer-events-none";
+        }
+
+        $('rankContainer').className = `bg-gradient-to-r ${rColorClass} border-2 rounded-2xl p-6 flex flex-col items-center justify-center mb-8 shadow-md relative overflow-hidden`;
+        $('rankValueContainer').className = `text-3xl font-black leading-none mt-1 ${rTextClass}`;
+        $('rankIconContainer').className = `${rIconClass} p-3 rounded-full shadow-sm`;
+        $('rankLabel').className = `${rLabelClass} font-bold text-sm uppercase tracking-wider`;
+
+        if (title) {
+          $('rankTitleText').textContent = title;
+          $('rankTitleText').className = `text-2xl md:text-3xl font-black uppercase tracking-wider drop-shadow-lg ${tStyle}`;
+          show($('rankTitleContainer'));
+        } else { hide($('rankTitleContainer')); }
+        show($('rankContainer'));
+      } else { hide($('rankContainer')); }
+
+      hideLoading();
+      switchView('result');
+    }
+
+    // 8. TEACHER DASHBOARD
+    $('btnGeneratePrompt').onclick = () => {
+      const p = `Đóng vai là một ${$('pRole').value}. Hãy tạo một bộ đề thi trắc nghiệm về chủ đề "${$('pTopic').value}" dành cho đối tượng ${$('pGrade').value}.
+
+Yêu cầu cấu trúc:
+- Số lượng: ${$('pCount').value} câu hỏi.
+- Mức độ: ${$('pDiff').value}.
+${$('pNotes').value ? `- Ghi chú thêm: ${$('pNotes').value}\n` : ''}
+Yêu cầu định dạng xuất dữ liệu CHỈ MỘT BẢNG (table) 7 cột:
+Cột A: Nội dung câu (Toán học bọc trong dấu $, ví dụ $x^2 = 4$) | Cột B, C, D, E: Phương án 1, 2, 3, 4 | Cột F: Vị trí đáp án đúng (0-3) | Cột G: Link ảnh minh họa (tùy chọn).
+Chỉ in ra bảng, không giải thích.`;
+      
+      $('promptOutput').value = p;
+      show($('promptOutputContainer'));
+    };
+
+    $('btnCopyPrompt').onclick = () => {
+      $('promptOutput').select(); document.execCommand('copy');
+      $('promptCopyIcon').setAttribute('data-lucide', 'check');
+      $('promptCopyIcon').classList.add('text-green-600');
+      $('promptCopyText').textContent = 'Đã copy!';
+      lucide.createIcons();
+      setTimeout(() => {
+        $('promptCopyIcon').setAttribute('data-lucide', 'copy');
+        $('promptCopyIcon').classList.remove('text-green-600');
+        $('promptCopyText').textContent = 'Copy gửi AI';
+        lucide.createIcons();
+      }, 2000);
+    };
+
+    $('btnGenerateCode').onclick = async () => {
+      const link = $('tSheetLink').value;
+      const match = link.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!match) return alert('Link Google Sheets không hợp lệ!');
+      
+      const btn = $('btnGenerateCode');
+      btn.innerHTML = '<i data-lucide="refresh-cw" class="w-5 h-5 animate-spin"></i>';
+      lucide.createIcons();
+      btn.disabled = true;
+
+      const randomCountVal = $('tRandomCount').value;
+      const randomCount = randomCountVal ? parseInt(randomCountVal) : null;
+
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'exam_configs', code), {
+          sheetId: match[1], 
+          randomCount: randomCount,
+          teacherId: currentUser?.uid || 'anonymous', 
+          createdAt: serverTimestamp()
+        });
+        
+        $('qrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.origin + window.location.pathname + '?code=' + code)}`;
+        $('generatedCodeText').textContent = code;
+        show($('codeResultContainer'));
+        $('tSheetLink').value = '';
+      } catch(e) { alert('Lỗi: ' + e.message); }
+      btn.innerHTML = 'Tạo Mã Bài Thi';
+      btn.disabled = false;
+    };
+
+    $('btnCopyJoinLink').onclick = () => {
+      const code = $('generatedCodeText').textContent;
+      const url = `${window.location.origin}${window.location.pathname}?code=${code}`;
+      const ta = document.createElement("textarea"); ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      
+      $('linkCopyIcon').setAttribute('data-lucide', 'check');
+      $('linkCopyText').textContent = 'Đã Copy Link!';
+      lucide.createIcons();
+      setTimeout(()=>{
+        $('linkCopyIcon').setAttribute('data-lucide', 'share-2');
+        $('linkCopyText').textContent = 'Copy Link Nhanh';
+        lucide.createIcons();
+      }, 2000);
+    };
+
+    function fetchLeaderboard() {
+      if(unsubscribeLeaderboard) unsubscribeLeaderboard();
+      const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'exam_results');
+      unsubscribeLeaderboard = onSnapshot(colRef, (snap) => {
+        let results = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        results.sort((a,b) => b.score !== a.score ? b.score - a.score : a.timeSpent - b.timeSpent);
+        leaderboardData = results;
+        drawLeaderboard();
+        drawErrorStats();
+      }, (err) => console.error(err));
+    }
+
+    function drawLeaderboard() {
+      let html = '';
+      if(leaderboardData.length === 0) {
+        html = `<tr><td colspan="5" class="p-8 text-center text-gray-400 font-medium"><i data-lucide="refresh-cw" class="w-8 h-8 mx-auto mb-3 animate-spin opacity-50"></i><p>Chưa có dữ liệu...</p></td></tr>`;
+      } else {
+        leaderboardData.forEach((st, i) => {
+          let rClass = "text-gray-500";
+          if(i===0) rClass="bg-yellow-100 text-yellow-600";
+          else if(i===1) rClass="bg-gray-200 text-gray-600";
+          else if(i===2) rClass="bg-orange-100 text-orange-700";
+          
+          const d = new Date(st.timestamp);
+          const timeStr = `${Math.floor(st.timeSpent/60).toString().padStart(2,'0')}:${(st.timeSpent%60).toString().padStart(2,'0')}`;
+          
+          html += `<tr class="hover:bg-gray-50 transition">
+            <td class="p-4"><span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-black ${rClass}">${i+1}</span></td>
+            <td class="p-4 font-bold text-gray-900 text-lg">${st.studentName}<div class="text-xs text-gray-400 font-medium">${d.toLocaleString('vi-VN')}</div></td>
+            <td class="p-4 text-center"><span class="bg-blue-50 text-blue-700 border border-blue-200 text-xs px-2.5 py-1 rounded-md font-bold">${st.examCode||'DEMO'}</span></td>
+            <td class="p-4 text-center"><div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-green-50 text-green-700 font-black border border-green-200">${st.score} / ${st.total}</div></td>
+            <td class="p-4 text-center text-gray-600 font-bold">${timeStr}</td>
+          </tr>`;
+        });
+      }
+      $('leaderboardBody').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function drawErrorStats() {
+      const stats = {};
+      leaderboardData.forEach(entry => {
+        if(!entry.detailedResults) return;
+        const code = entry.examCode || 'DEMO';
+        if(!stats[code]) stats[code] = {};
+        entry.detailedResults.forEach(dr => {
+          if(!stats[code][dr.question]) stats[code][dr.question] = { wrong: 0, total: 0 };
+          stats[code][dr.question].total += 1;
+          if(!dr.isCorrect) stats[code][dr.question].wrong += 1;
+        });
+      });
+
+      const codes = Object.keys(stats);
+      if(codes.length === 0) { hide($('errorStatsContainer')); return; }
+
+      let html = '';
+      codes.forEach(code => {
+        const qStats = stats[code];
+        const arr = Object.keys(qStats).map(q => ({
+          q, w: qStats[q].wrong, t: qStats[q].total, r: (qStats[q].wrong / qStats[q].total)*100
+        })).filter(x => x.w > 0).sort((a,b)=>b.r - a.r).slice(0,5);
+        
+        if(arr.length === 0) return;
+        
+        let innerHtml = '';
+        arr.forEach(item => {
+          const bg = item.r > 50 ? 'bg-red-500' : 'bg-orange-400';
+          innerHtml += `
+            <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
+              <div class="flex justify-between items-start mb-3">
+                <div class="text-sm font-bold text-gray-800 flex-1 pr-4 math-render-target">${formatMathText(item.q)}</div>
+                <div class="text-right whitespace-nowrap ml-4">
+                  <span class="text-lg font-black text-red-600">${Math.round(item.r)}% sai</span>
+                  <p class="text-xs font-medium text-gray-500">${item.w} / ${item.t} học sinh</p>
+                </div>
+              </div>
+              <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="h-full rounded-full ${bg}" style="width: ${item.r}%"></div></div>
+            </div>`;
+        });
+        
+        html += `<div class="bg-red-50/50 rounded-xl p-5 border border-red-100 mb-6">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center"><span class="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm mr-2 border border-red-200">Mã đề: ${code}</span>Top câu hỏi học sinh dễ sai nhất</h3>
+          <div class="space-y-4">${innerHtml}</div></div>`;
+      });
+
+      if(html) {
+        $('errorStatsContent').innerHTML = html;
+        show($('errorStatsContainer'));
+        triggerMathJax(document.querySelectorAll('.math-render-target'));
+      } else {
+        hide($('errorStatsContainer'));
+      }
+    }
+
+    // Init Icons
+    lucide.createIcons();
+
+  </script>
+</body>
+</html>
